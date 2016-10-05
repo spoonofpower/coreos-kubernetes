@@ -78,7 +78,7 @@ func (c *Cluster) NewTLSAssets() (*RawTLSAssets, error) {
 			"kubernetes",
 			"kubernetes.default",
 			"kubernetes.default.svc",
-			"kubernetes.default.svc.cluster.local",
+			"kubernetes.default.svc." + c.ClusterName + ".cluster",
 			c.ExternalDNSName,
 		},
 		IPAddresses: []string{

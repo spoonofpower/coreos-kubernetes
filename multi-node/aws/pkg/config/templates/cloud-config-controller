@@ -64,7 +64,7 @@ coreos:
         --allow-privileged=true \
         --pod-manifest-path=/etc/kubernetes/manifests \
         --cluster_dns={{.DNSServiceIP}} \
-        --cluster_domain=cluster.local \
+        --cluster_domain={{.ClusterName}}.cluster \
         --cloud-provider=aws
         Restart=always
         RestartSec=10
@@ -523,7 +523,7 @@ write_files:
                   initialDelaySeconds: 3
                   timeoutSeconds: 5
                 args:
-                - --domain=cluster.local.
+                - --domain={{.ClusterName}}.cluster.
                 - --dns-port=10053
                 ports:
                 - containerPort: 10053
@@ -564,9 +564,9 @@ write_files:
                     cpu: 10m
                     memory: 50Mi
                 args:
-                - --cmd=nslookup kubernetes.default.svc.cluster.local 127.0.0.1 >/dev/null
+                - --cmd=nslookup kubernetes.default.svc.{{.ClusterName}}.cluster 127.0.0.1 >/dev/null
                 - --url=/healthz-dnsmasq
-                - --cmd=nslookup kubernetes.default.svc.cluster.local 127.0.0.1:10053 >/dev/null
+                - --cmd=nslookup kubernetes.default.svc.{{.ClusterName}}.cluster 127.0.0.1:10053 >/dev/null
                 - --url=/healthz-kubedns
                 - --port=8080
                 - --quiet
