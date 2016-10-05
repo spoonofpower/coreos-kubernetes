@@ -1,7 +1,7 @@
 #cloud-config
 coreos:
   update:
-    reboot-strategy: "off"
+    reboot-strategy: "etcd-lock"
   flannel:
     interface: $private_ipv4
     etcd_endpoints: {{ .ETCDEndpoints }}
