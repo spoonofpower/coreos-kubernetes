@@ -4,19 +4,8 @@ coreos:
     reboot-strategy: "etcd-lock"
   flannel:
     interface: $private_ipv4
-    etcd_endpoints: {{ .ETCDEndpoints }}
-  etcd2:
-    name: controller
-    advertise-client-urls: http://$private_ipv4:2379
-    initial-advertise-peer-urls: http://$private_ipv4:2380
-    listen-client-urls: http://0.0.0.0:2379
-    listen-peer-urls: http://0.0.0.0:2380
-    initial-cluster: controller=http://$private_ipv4:2380
+    etcd_endpoints: {{.ETCDEndpoints}}
   units:
-    - name: etcd2.service
-      command: start
-      runtime: true
-
     - name: docker.service
       drop-ins:
         - name: 40-flannel.conf
@@ -32,9 +21,7 @@ coreos:
         - name: 10-etcd.conf
           content: |
             [Service]
-            ExecStartPre=/usr/bin/curl --silent -X PUT -d \
-            "value={\"Network\" : \"{{.PodCIDR}}\", \"Backend\" : {\"Type\" : \"vxlan\"}}" \
-            http://localhost:2379/v2/keys/coreos.com/network/config?prevExist=false
+            ExecStartPre=-/usr/bin/etcdctl --endpoints {{.ETCDEndpoints}} mk /coreos.com/network/config '{"Network": "{{.PodCIDR}}", "Backend": {"Type": "vxlan"}}'
     - name: kubelet.service
       command: start
       runtime: true
@@ -120,7 +107,7 @@ coreos:
         Environment=FELIX_FELIXHOSTNAME=$private_ipv4
         Environment=CALICO_NETWORKING=false
         Environment=NO_DEFAULT_POOLS=true
-        Environment=ETCD_ENDPOINTS={{ .ETCDEndpoints }}
+        Environment=ETCD_ENDPOINTS={{.ETCDEndpoints}}
         ExecStart=/usr/bin/rkt run --inherit-env --stage1-from-dir=stage1-fly.aci \
         --volume=modules,kind=host,source=/lib/modules,readOnly=false \
         --mount=volume=modules,target=/lib/modules \
@@ -315,7 +302,7 @@ write_files:
           - /hyperkube
           - apiserver
           - --bind-address=0.0.0.0
-          - --etcd-servers=http://localhost:2379
+          - --etcd-servers={{ .ETCDEndpoints }}
           - --allow-privileged=true
           - --service-cluster-ip-range={{.ServiceCIDR}}
           - --secure-port=443
@@ -445,7 +432,7 @@ write_files:
             image: calico/kube-policy-controller:v0.2.0
             env:
               - name: ETCD_ENDPOINTS
-                value: "{{ .ETCDEndpoints }}"
+                value: "{{.ETCDEndpoints}}"
               - name: K8S_API
                 value: "http://127.0.0.1:8080"
               - name: LEADER_ELECTION
@@ -751,7 +738,7 @@ write_files:
           ports:
           - port: 80
             targetPort: 9090
-        
+
   - path: /etc/kubernetes/ssl/ca.pem.enc
     encoding: gzip+base64
     content: {{.TLSConfig.CACert}}
@@ -772,7 +759,7 @@ write_files:
             "type": "flannel",
             "delegate": {
                 "type": "calico",
-                "etcd_endpoints": "{{ .ETCDEndpoints }}",
+                "etcd_endpoints": "{{.ETCDEndpoints}}",
                 "log_level": "none",
                 "log_level_stderr": "info",
                 "hostname": "$private_ipv4",

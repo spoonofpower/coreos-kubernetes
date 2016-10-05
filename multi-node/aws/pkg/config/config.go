@@ -127,6 +127,8 @@ type Cluster struct {
 	VPCID                    string            `yaml:"vpcId,omitempty"`
 	RouteTableID             string            `yaml:"routeTableId,omitempty"`
 	VPCCIDR                  string            `yaml:"vpcCIDR,omitempty"`
+	ETCDEndpoints            string            `yaml:"etcdEndpoints"`
+	SecurityGroup            string            `yaml:"securityGroup"`
 	InstanceCIDR             string            `yaml:"instanceCIDR,omitempty"`
 	ControllerIP             string            `yaml:"controllerIP,omitempty"`
 	PodCIDR                  string            `yaml:"podCIDR,omitempty"`
@@ -164,7 +166,6 @@ var supportedReleaseChannels = map[string]bool{
 
 func (c Cluster) Config() (*Config, error) {
 	config := Config{Cluster: c}
-	config.ETCDEndpoints = fmt.Sprintf("http://%s:2379", c.ControllerIP)
 	config.APIServers = fmt.Sprintf("http://%s:8080", c.ControllerIP)
 	config.SecureAPIServers = fmt.Sprintf("https://%s:443", c.ControllerIP)
 	config.APIServerEndpoint = fmt.Sprintf("https://%s", c.ExternalDNSName)
@@ -420,7 +421,6 @@ func getContextString(buf []byte, offset, lineCount int) string {
 type Config struct {
 	Cluster
 
-	ETCDEndpoints     string
 	APIServers        string
 	SecureAPIServers  string
 	APIServerEndpoint string

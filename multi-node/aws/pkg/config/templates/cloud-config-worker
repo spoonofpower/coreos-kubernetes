@@ -4,7 +4,7 @@ coreos:
     reboot-strategy: "etcd-lock"
   flannel:
     interface: $private_ipv4
-    etcd_endpoints: {{ .ETCDEndpoints }}
+    etcd_endpoints: {{.ETCDEndpoints}}
   units:
     - name: docker.service
       drop-ins:
@@ -103,7 +103,7 @@ coreos:
         Environment=FELIX_FELIXHOSTNAME=$private_ipv4
         Environment=CALICO_NETWORKING=false
         Environment=NO_DEFAULT_POOLS=true
-        Environment=ETCD_ENDPOINTS={{ .ETCDEndpoints }}
+        Environment=ETCD_ENDPOINTS={{.ETCDEndpoints}}
         ExecStart=/usr/bin/rkt run --inherit-env --stage1-from-dir=stage1-fly.aci \
         --volume=modules,kind=host,source=/lib/modules,readOnly=false \
         --mount=volume=modules,target=/lib/modules \
@@ -268,7 +268,7 @@ write_files:
             "type": "flannel",
             "delegate": {
                 "type": "calico",
-                "etcd_endpoints": "{{ .ETCDEndpoints }}",
+                "etcd_endpoints": "{{.ETCDEndpoints}}",
                 "log_level": "none",
                 "log_level_stderr": "info",
                 "hostname": "$private_ipv4",
