@@ -81,6 +81,12 @@ kmsKeyArn: "{{.KMSKeyARN}}"
 # CIDR for Kubernetes VPC. If vpcId is specified, must match the CIDR of existing vpc.
 # vpcCIDR: "10.0.0.0/16"
 
+# Externally managed etcd cluster
+etcdEndpoints: http://172.20.1.5:2379,http://172.20.2.5:2379,http://172.20.3.5:2379
+
+# Security group to talk to the etcd cluster
+securityGroup: sg-a99d2ed0
+
 # CIDR for Kubernetes subnet when placing nodes in a single availability zone (not highly-available) Leave commented out for multi availability zone setting and use the below `subnets` section instead.
 # instanceCIDR: "10.0.0.0/24"
 
