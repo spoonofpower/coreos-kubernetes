@@ -279,7 +279,7 @@
               {
                 "Ref": "SecurityGroupController"
               },
-              "{{.SecurityGroup}}"
+              "{{.ETCDClientSecurityGroup}}"
             ],
             "PrivateIpAddress": "{{.ControllerIP}}",
             "SubnetId": {
@@ -325,7 +325,7 @@
           {
             "Ref": "SecurityGroupWorker"
           },
-          "{{.SecurityGroup}}"
+          "{{.ETCDClientSecurityGroup}}"
         ],
         {{if .WorkerSpotPrice}}
         "SpotPrice": {{.WorkerSpotPrice}},
@@ -367,10 +367,16 @@
             "ToPort": -1
           },
           {
-            "CidrIp": "0.0.0.0/0",
+            "SourceSecurityGroupId": "{{.VPNSecurityGroup}}",
             "FromPort": 22,
             "IpProtocol": "tcp",
             "ToPort": 22
+          },
+          {
+            "SourceSecurityGroupId": "{{.VPNSecurityGroup}}",
+            "FromPort": 1194,
+            "IpProtocol": "udp",
+            "ToPort": 1194
           },
           {
             "CidrIp": "0.0.0.0/0",
@@ -436,7 +442,7 @@
             "ToPort": -1
           },
           {
-            "CidrIp": "0.0.0.0/0",
+            "SourceSecurityGroupId": "{{.VPNSecurityGroup}}",
             "FromPort": 22,
             "IpProtocol": "tcp",
             "ToPort": 22

@@ -128,7 +128,8 @@ type Cluster struct {
 	RouteTableID             string            `yaml:"routeTableId,omitempty"`
 	VPCCIDR                  string            `yaml:"vpcCIDR,omitempty"`
 	ETCDEndpoints            string            `yaml:"etcdEndpoints"`
-	SecurityGroup            string            `yaml:"securityGroup"`
+	ETCDClientSecurityGroup  string            `yaml:"etcdClientSecurityGroup"`
+	VPNSecurityGroup         string            `yaml:"vpnSecurityGroup"`
 	InstanceCIDR             string            `yaml:"instanceCIDR,omitempty"`
 	ControllerIP             string            `yaml:"controllerIP,omitempty"`
 	PodCIDR                  string            `yaml:"podCIDR,omitempty"`
