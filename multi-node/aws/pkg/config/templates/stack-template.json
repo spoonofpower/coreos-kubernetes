@@ -279,7 +279,7 @@
               {
                 "Ref": "SecurityGroupController"
               },
-              "{{.ETCDClientSecurityGroup}}"
+              "{{.ETCDSecurityGroup}}"
             ],
             "PrivateIpAddress": "{{.ControllerIP}}",
             "SubnetId": {
@@ -325,7 +325,7 @@
           {
             "Ref": "SecurityGroupWorker"
           },
-          "{{.ETCDClientSecurityGroup}}"
+          "{{.ETCDSecurityGroup}}"
         ],
         {{if .WorkerSpotPrice}}
         "SpotPrice": {{.WorkerSpotPrice}},
