@@ -528,6 +528,32 @@
       },
       "Type": "AWS::EC2::SecurityGroupIngress"
     },
+    "SecurityGroupWorkerIngressFromWorkerToControllerNodeExporter": {
+      "Properties": {
+        "GroupId": {
+          "Ref": "SecurityGroupController"
+        },
+        "IpProtocol": "tcp",
+        "SourceSecurityGroupId": {
+          "Ref": "SecurityGroupWorker"
+        },
+        "ToPort": 9100
+      },
+      "Type": "AWS::EC2::SecurityGroupIngress"
+    },
+    "SecurityGroupWorkerIngressFromWorkerToWorkerNodeExporter": {
+      "Properties": {
+        "GroupId": {
+          "Ref": "SecurityGroupWorker"
+        },
+        "IpProtocol": "tcp",
+        "SourceSecurityGroupId": {
+          "Ref": "SecurityGroupWorker"
+        },
+        "ToPort": 9100
+      },
+      "Type": "AWS::EC2::SecurityGroupIngress"
+    },
     "SecurityGroupWorkerIngressFromControllerTocAdvisor": {
       "Properties": {
         "FromPort": 4194,
